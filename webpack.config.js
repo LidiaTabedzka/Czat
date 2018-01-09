@@ -2,7 +2,8 @@ const path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-var OptimizeJsPlugin = require('optimize-js-plugin')
+var OptimizeJsPlugin = require('optimize-js-plugin');
+var env = process.env.NODE_ENV;
 
 module.exports = {
     entry: (env !== 'production' ? [
@@ -36,7 +37,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-        template: 'src/index.html',
+        template: './index.html',
         filename: 'index.html',
         inject: 'body'
         }), 
