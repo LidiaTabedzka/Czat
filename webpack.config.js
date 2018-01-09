@@ -1,9 +1,25 @@
 const path = require('path');
-var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var OptimizeJsPlugin = require('optimize-js-plugin');
-var env = process.env.NODE_ENV;
+var env = process.env.NODE_ENV || 'development';
+
+var plugins = [
+    new HtmlWebpackPlugin({
+        template: './index.html',
+        filename: 'index.html',
+        inject: 'body',
+    })
+];
+
+if (env === 'production') {
+    plugins.push(
+        new webpack.optimize.UglifyJsPlugin(),
+        new OptimizeJsPlugin({
+            sourceMap: false
+        })
+    );
+}
 
 module.exports = {
     entry: (env !== 'production' ? [
@@ -14,15 +30,17 @@ module.exports = {
     output: {
         filename: './bundle.js',
         path: path.resolve(__dirname, 'public')
-        },
+    },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                loader: "babel-loader"
+                loader: "babel-loader",
+                exclude: /node_modules/
             },
             {
                 test: /\.css$/,
+                exclude: /node_modules/,
                 use: [
                     { loader: 'style-loader'},
                     {
@@ -35,15 +53,5 @@ module.exports = {
             }
         ]
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-        template: './index.html',
-        filename: 'index.html',
-        inject: 'body'
-        }), 
-        new webpack.optimize.UglifyJsPlugin(),
-        new OptimizeJsPlugin({
-            sourceMap: false
-          })
-    ]
+    plugins: plugins
 };

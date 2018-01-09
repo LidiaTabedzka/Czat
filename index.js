@@ -20,8 +20,8 @@ io.on('connection', function(socket) {
     socket.on('join', function(name){
         // użytkownika, który pojawił się w aplikacji zapisujemy do serwisu trzymającego listę osób w czacie
         userService.addUser({
-        id: socket.id,
-        name
+            id: socket.id,
+            name
         });
         // aplikacja emituje zdarzenie update, które aktualizuje informację na temat listy użytkowników każdemu nasłuchującemu na wydarzenie 'update'
         io.emit('update', {
