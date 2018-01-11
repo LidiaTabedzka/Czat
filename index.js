@@ -34,15 +34,17 @@ io.on('connection', function(socket) {
         userService.removeUser(socket.id);
         // aktualizuje listę użytkowników
         socket.broadcast.emit('update', {
-          users: userService.getAllUsers()
+            users: userService.getAllUsers()
         });
     });
     //obsługa wysyłania wiadomości do użytkowników czatu
     socket.on('message', function(message){
         const {name} = userService.getUserById(socket.id);
         socket.broadcast.emit('message', {
-          text: message.text,
-          from: name
+            date: message.date,
+            id: message.id,
+            text: message.text,
+            from: name
         });
     });
 });

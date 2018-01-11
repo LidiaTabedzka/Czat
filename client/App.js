@@ -6,7 +6,7 @@ import UserForm from './UserForm';
 import MessageList from './MessageList.js';
 import MessageForm from './MessageForm.js';
 
-const socket = io('/');
+const socket = io('http://localhost:3000/');
 
 class App extends Component {
     constructor(props) {
@@ -44,6 +44,11 @@ class App extends Component {
         socket.emit('join', name);
     }
 
+    removeMessage(id) {
+        const remainder = this.state.messages.filter(message => message.id !== id);
+        this.setState({messages: remainder});
+    }
+
     renderLayout() {
         return (
             <div className={styles.App}>
@@ -58,7 +63,7 @@ class App extends Component {
                 <div className={styles.AppBody}>
                     <UsersList users={this.state.users}/>
                     <div className={styles.MessageWrapper}>
-                        <MessageList messages={this.state.messages}/>
+                        <MessageList messages={this.state.messages} name={this.state.name} removeMessage={id => this.removeMessage(id)}/>
                         <MessageForm onMessageSubmit={message => this.handleMessageSubmit(message)} name={this.state.name}/>
                     </div>
                 </div>
