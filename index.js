@@ -47,6 +47,14 @@ io.on('connection', function(socket) {
             from: name
         });
     });
+    //obsługa wysyłania informacji do użytkowników czatu o usunięciu danej wiadomości
+    socket.on('deleteMsg', function(id){
+        socket.broadcast.emit('deleteMsg', id);
+    }); 
+    //obsługa wysyłania informacji do użytkowników czatu o zmianie tekstu danej wiadomości
+    socket.on('updateMsgText', function(id, text){
+        socket.broadcast.emit('updateMsgText', id, text);
+    });   
 });
 
 server.listen(3000, function(){

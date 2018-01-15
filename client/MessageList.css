@@ -31,3 +31,13 @@
     cursor: pointer;
     color: red;
 }
+.button:nth-of-type(2) {
+    right: 20px;
+}
+.button:nth-of-type(2):hover {
+    color: blue;
+}
+.msgTextInput {
+    padding: 5px;
+    margin-bottom: 10px;
+}

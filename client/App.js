@@ -22,6 +22,8 @@ class App extends Component {
     componentDidMount() {
         socket.on('message', message => this.messageReceive(message));
         socket.on('update', ({users}) => this.chatUpdate(users));
+        socket.on('deleteMsg', id => this.removeMessage(id));
+        socket.on('updateMsgText', (id, text) => this.updateMsgText(id, text))
     }
 
     messageReceive(message) {
@@ -49,6 +51,22 @@ class App extends Component {
         this.setState({messages: remainder});
     }
 
+    removeMessageHandler(id) {
+        socket.emit('deleteMsg', id);
+        this.removeMessage(id);
+    }
+
+    updateMsgText(id, text) {
+        var msgIndex = this.state.messages.findIndex((message => message.id == id));
+        this.state.messages[msgIndex].text = text;
+        this.setState({messages: this.state.messages});
+    }
+
+    updateMsgTextHandler(id, text) {
+        socket.emit('updateMsgText', id, text);
+        this.updateMsgText(id, text);
+    }
+
     renderLayout() {
         return (
             <div className={styles.App}>
@@ -63,7 +81,7 @@ class App extends Component {
                 <div className={styles.AppBody}>
                     <UsersList users={this.state.users}/>
                     <div className={styles.MessageWrapper}>
-                        <MessageList messages={this.state.messages} name={this.state.name} removeMessage={id => this.removeMessage(id)}/>
+                        <MessageList messages={this.state.messages} name={this.state.name} removeMessage={id => this.removeMessageHandler(id)} updateMsgText={(id, text) => this.updateMsgTextHandler(id, text)} />
                         <MessageForm onMessageSubmit={message => this.handleMessageSubmit(message)} name={this.state.name}/>
                     </div>
                 </div>

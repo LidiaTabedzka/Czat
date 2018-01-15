@@ -1,18 +1,70 @@
 import React, {Component} from 'react';
 import styles from './MessageList.css';
 
-const Message = props => (
-    <div>
-        <div className={styles.Message}>
-            <span className={styles.date}>{props.date}</span>
-            <strong>{props.from} :</strong>
-            <span className={styles.text}>{props.text}</span>
-            {
-                props.from == props.userName ? <button className={styles.button} onClick={() => props.removeMessage(props.id)}>X</button> : null
-            }
-        </div>
-    </div>
-);
+
+class Message extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            updateText: false,
+            newText: this.props.text
+        };
+    }
+
+    updateMsgText() {
+        this.setState({updateText: true});   
+    }
+
+    changeHandler(e) {
+        this.setState({ newText : e.target.value });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        if (this.state.newText != "") {
+            this.props.updateMsgText(this.props.id, this.state.newText);
+        } else {
+            this.setState({ 
+                newText: this.props.text     
+            });
+        }
+        this.setState({ 
+            updateText: false      
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <div className={styles.Message}>
+                    <span className={styles.date}>{this.props.date}</span>
+                    <strong>{this.props.from} :</strong>
+                    <span className={styles.text}>{this.props.text}</span>
+                    {
+                        this.props.from == this.props.userName ? 
+                            <div>
+                                <button className={styles.button} onClick={() => this.props.removeMessage(this.props.id)}><i className="fa fa-times" aria-hidden="true"></i></button>
+                                <button className={styles.button} onClick={() => this.updateMsgText()}><i className="fa fa-pencil" aria-hidden="true"></i></button>
+                            </div> : null
+                    }
+                </div>
+                <div>
+                    {
+                        this.state.updateText ? 
+                            <form onSubmit={e => this.handleSubmit(e)}>
+                                <input 
+                                    className={styles.msgTextInput}
+                                    ref={input => input && input.focus()}
+                                    value={this.state.newText} 
+                                    onChange={e => this.changeHandler(e)}
+                                /> 
+                            </form> : null
+                    }
+                </div>
+            </div>
+        );
+    }
+};
 
 const MessageList = props => (
     <div className={styles.MessageList}>
@@ -27,6 +79,7 @@ const MessageList = props => (
                         from={message.from}
                         text={message.text}
                         removeMessage={props.removeMessage}
+                        updateMsgText={props.updateMsgText}
                     />
                 );
             })
